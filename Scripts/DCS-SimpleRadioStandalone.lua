@@ -5,7 +5,7 @@
 
 --      local dcsSr=require('lfs');dofile(dcsSr.writedir()..[[Scripts\DCS-SimpleRadioStandalone.lua]])
 
--- 
+--
 -- Make sure you COPY this file to the same location as the Export.lua as well.
 -- If an Export.lua doesn't exist, just create one add add the single line in
 local SR = {}
@@ -34,17 +34,17 @@ package.path  = package.path..";.\\LuaSocket\\?.lua;"
 package.cpath = package.cpath..";.\\LuaSocket\\?.dll;"
 
 ---- DCS Search Paths - So we can load Terrain!
-local guiBindPath = './dxgui/bind/?.lua;' .. 
-              './dxgui/loader/?.lua;' .. 
-              './dxgui/skins/skinME/?.lua;' .. 
+local guiBindPath = './dxgui/bind/?.lua;' ..
+              './dxgui/loader/?.lua;' ..
+              './dxgui/skins/skinME/?.lua;' ..
               './dxgui/skins/common/?.lua;'
 
-package.path = 
+package.path =
       package.path..";"
     .. guiBindPath
     .. './MissionEditor/?.lua;'
     .. './MissionEditor/themes/main/?.lua;'
-    .. './MissionEditor/modules/?.lua;' 
+    .. './MissionEditor/modules/?.lua;'
     .. './Scripts/?.lua;'
     .. './LuaSocket/?.lua;'
     .. './Scripts/UI/?.lua;'
@@ -81,11 +81,11 @@ local _lastUnitId = "" -- used for a10c volume
 
 LuaExportActivityNextEvent = function(tCurrent)
     local tNext = tCurrent + 0.1 -- for helios support
-    -- we only want to send once every 0.2 seconds 
+    -- we only want to send once every 0.2 seconds
     -- but helios (and other exports) require data to come much faster
     -- so we just flip a boolean every run through to reduce to 0.2 rather than 0.1 seconds
     if _send then
-        
+
         _send = false
 
         local _status,_result = pcall(function()
@@ -141,7 +141,7 @@ LuaExportActivityNextEvent = function(tCurrent)
                   elseif _update.unit == "FA-18C_hornet" then
                     _update = SR.exportRadioFA18C(_update)
                 elseif string.find(_update.unit, "F-14") then
-                    _update = SR.exportRadioF14(_update)                        
+                    _update = SR.exportRadioF14(_update)
                 elseif _update.unit == "F-86F Sabre" then
                     _update = SR.exportRadioF86Sabre(_update)
                 elseif _update.unit == "MiG-15bis" then
@@ -159,7 +159,7 @@ LuaExportActivityNextEvent = function(tCurrent)
                 elseif _update.unit == "Bf-109K-4" then
                     _update = SR.exportRadioBF109(_update)
                 elseif string.find(_update.unit, "SpitfireLFMkIX") then
-                    _update = SR.exportRadioSpitfireLFMkIX(_update) 
+                    _update = SR.exportRadioSpitfireLFMkIX(_update)
                 elseif _update.unit == "C-101EB" then
                     _update = SR.exportRadioC101EB(_update)
                 elseif _update.unit == "C-101CC" then
@@ -210,7 +210,7 @@ LuaExportActivityNextEvent = function(tCurrent)
                     _update.radios[3].freqMax = 399.975*1000000
                     _update.radios[3].volMode = 1
                     _update.radios[3].freqMode = 1
-                    
+
                     _update.radios[3].encKey = 1
                     _update.radios[3].encMode = 1 -- FC3 Gui Toggle + Gui Enc key setting
 
@@ -279,7 +279,7 @@ LuaExportActivityNextEvent = function(tCurrent)
             SR.log('ERROR: ' .. _result)
         end
 
-    else 
+    else
         _send = true
     end
 
@@ -297,7 +297,7 @@ LuaExportActivityNextEvent = function(tCurrent)
         SR.log('ERROR Calling other LuaExportActivityNextEvent from another script: ' .. _result)
     end
 
-    
+
         if terrain == nil then
            SR.log("Terrain Export is not working")
             --SR.log("EXPORT CHECK "..tostring(terrain.isVisible(1,100,1,1,100,1)))
@@ -390,7 +390,7 @@ function SR.checkLOS(_clientsList)
                 end
             end
 
-            if not _hasLos then 
+            if not _hasLos then
                 table.insert(_result,{id = _client.id, los = 1.0 }) -- 1.0 Being NO line of sight - FULL signal loss
             end
         end
@@ -431,7 +431,7 @@ function SR.exportRadioA10A(_data)
     _data.radios[3].freqMax = 399.975*1000000
     _data.radios[3].volMode = 1
     _data.radios[3].freqMode = 1
-    
+
     _data.radios[3].encKey = 1
     _data.radios[3].encMode = 1 -- FC3 Gui Toggle + Gui Enc key setting
 
@@ -452,7 +452,7 @@ function SR.exportRadioA10A(_data)
 
     return _data
 end
- 
+
 function SR.exportRadioMiG29(_data)
 
     _data.radios[2].name = "R-862"
@@ -644,7 +644,7 @@ function SR.exportRadioF15C(_data)
     _data.radios[3].freqMax = 399.975*1000000
     _data.radios[3].volMode = 1
     _data.radios[3].freqMode = 1
-    
+
     _data.radios[3].encKey = 1
     _data.radios[3].encMode = 1 -- FC3 Gui Toggle + Gui Enc key setting
 
@@ -683,7 +683,7 @@ function SR.exportRadioUH1H(_data)
     local _selector  = SR.getSelectorPosition(15,0.1)
 
     if _selector < 1 then
-        _data.radios[3].channel =  SR.getSelectorPosition(16,0.05) + 1 --add 1 as channel 0 is channel 1 
+        _data.radios[3].channel =  SR.getSelectorPosition(16,0.05) + 1 --add 1 as channel 0 is channel 1
     end
 
     _data.radios[4].name = "AN/ARC-134"
@@ -695,7 +695,7 @@ function SR.exportRadioUH1H(_data)
     --guard mode for UHF Radio
     local uhfModeKnob = SR.getSelectorPosition(17,0.1)
     if uhfModeKnob == 2 and _data.radios[3].freq > 1000 then
-        _data.radios[3].secFreq = 243.0*1000000 
+        _data.radios[3].secFreq = 243.0*1000000
     end
 
     local _panel = GetDevice(0)
@@ -745,15 +745,15 @@ function SR.exportRadioSA342(_data)
 
     _data.radios[3].modulation = 0
     _data.radios[3].volume = SR.getRadioVolume(0, 69,{0.0,1.0},false)
-    
+
     _data.radios[3].encKey = 1
     _data.radios[3].encMode = 3 -- 3 is Incockpit toggle + Gui Enc Key setting
 
     _data.radios[4].name = "TRC 9600 PR4G"
     _data.radios[4].freq = SR.getRadioFrequency(28)
     _data.radios[4].modulation = 1
-    _data.radios[4].volume =  SR.getRadioVolume(0, 70,{0.0,1.0},false) 
-    
+    _data.radios[4].volume =  SR.getRadioVolume(0, 70,{0.0,1.0},false)
+
     _data.radios[4].encKey = 1
     _data.radios[4].encMode = 3 -- Variable Enc key but turned on by sim
 
@@ -769,9 +769,9 @@ function SR.exportRadioSA342(_data)
     --guard mode for UHF Radio
     local uhfModeKnob = SR.getSelectorPosition(383,0.167)
     if uhfModeKnob == 5 and _data.radios[3].freq > 1000 then
-        _data.radios[3].secFreq = 243.0*1000000 
+        _data.radios[3].secFreq = 243.0*1000000
     end
-    
+
     --- is FM ON?
     if SR.getSelectorPosition(272,0.25) == 0  then
         _data.radios[4].freq = 1
@@ -801,7 +801,7 @@ function SR.exportRadioKA50(_data)
     else
         _data.radios[2].modulation = 0
     end
-    _data.radios[2].volume = SR.getRadioVolume(0, 353,{0.0,1.0},false) -- using ADF knob for now 
+    _data.radios[2].volume = SR.getRadioVolume(0, 353,{0.0,1.0},false) -- using ADF knob for now
 
     _data.radios[3].name = "R-828"
     _data.radios[3].freq = SR.getRadioFrequency(49,50000)
@@ -847,7 +847,7 @@ function SR.exportRadioMI8(_data)
 
     _data.radios[2].name = "R-863"
     _data.radios[2].freq = SR.getRadioFrequency(38)
-    
+
     local _modulation = GetDevice(0):get_argument_value(369)
     if _modulation > 0.5 then
         _data.radios[2].modulation = 1
@@ -859,9 +859,9 @@ function SR.exportRadioMI8(_data)
     local _selector  = GetDevice(0):get_argument_value(132)
 
     if _selector > 0.5 then
-        _data.radios[2].channel =  SR.getSelectorPosition(370,0.05) + 1 --add 1 as channel 0 is channel 1 
+        _data.radios[2].channel =  SR.getSelectorPosition(370,0.05) + 1 --add 1 as channel 0 is channel 1
     end
-    
+
     _data.radios[2].volume = SR.getRadioVolume(0, 156,{0.0,1.0},false)
 
     _data.radios[3].name = "JADRO-1A"
@@ -877,7 +877,7 @@ function SR.exportRadioMI8(_data)
     --guard mode for R-863 Radio
     local uhfModeKnob = SR.getSelectorPosition(153,1)
     if uhfModeKnob == 1 and _data.radios[2].freq > 1000 then
-        _data.radios[2].secFreq = 121.5*1000000 
+        _data.radios[2].secFreq = 121.5*1000000
     end
 
     -- Get selected radio from SPU-9
@@ -1096,8 +1096,8 @@ function SR.exportRadioA10C(_data)
             _device:set_argument_value(147,1.0) -- VHF FM
         end
     end
-    
-    
+
+
     -- VHF AM
     -- Set radio data
     _data.radios[2].name = "AN/ARC-186(V) AM"
@@ -1105,7 +1105,7 @@ function SR.exportRadioA10C(_data)
     _data.radios[2].modulation = 0
     _data.radios[2].volume = SR.getRadioVolume(0, 133,{0.0,1.0},false)*SR.getRadioVolume(0, 238,{0.0,1.0},false)*SR.getRadioVolume(0, 225,{0.0,1.0},false)*SR.getButtonPosition(226)
 
-    
+
     -- UHF
     -- Set radio data
     _data.radios[3].name = "AN/ARC-164 UHF"
@@ -1119,9 +1119,9 @@ function SR.exportRadioA10C(_data)
     if _selector == 1 then
         -- Using UHF preset channels
         local _channel  = SR.getSelectorPosition(161,0.05) + 1 --add 1 as channel 0 is channel 1
-        _data.radios[3].channel = _channel 
+        _data.radios[3].channel = _channel
     end
-    
+
     -- Check UHF function mode (0 = OFF, 1 = MAIN, 2 = BOTH, 3 = ADF)
     local uhfModeKnob = SR.getSelectorPosition(168,0.1)
     if uhfModeKnob == 2 and _data.radios[3].freq > 1000 then
@@ -1134,7 +1134,7 @@ function SR.exportRadioA10C(_data)
         _data.radios[3].secFreq = 0
     end
 
-    
+
     -- VHF FM
     -- Set radio data
     _data.radios[4].name = "AN/ARC-186(V)FM"
@@ -1142,7 +1142,7 @@ function SR.exportRadioA10C(_data)
     _data.radios[4].modulation = 1
     _data.radios[4].volume = SR.getRadioVolume(0, 147,{0.0,1.0},false)*SR.getRadioVolume(0, 238,{0.0,1.0},false)*SR.getRadioVolume(0, 223,{0.0,1.0},false)*SR.getButtonPosition(224)
     _data.radios[4].encMode = 2 -- mode 2 enc is set by aircraft & turned on by aircraft
-    
+
 
     -- KY-58 Radio Encryption
     -- Check if encryption is being used
@@ -1169,8 +1169,8 @@ function SR.exportRadioA10C(_data)
         end
     end
 
-    
-    -- Mic Switch Radio Select and Transmit - by Dyram  
+
+    -- Mic Switch Radio Select and Transmit - by Dyram
     -- Check Mic Switch position (UP: 751 1.0, DOWN: 751 -1.0, FWD: 752 1.0, AFT: 752 -1.0)
     if SR.getButtonPosition(752) == 1 then
         -- Mic Switch FWD pressed
@@ -1199,7 +1199,7 @@ function SR.exportRadioA10C(_data)
         _data.selected = -1
         _data.ptt = false
     end
-    
+
     _data.control = 0 -- HOTAS Controls - set to 1 for DCS PTT & Select controls
 
     return _data
@@ -1207,7 +1207,7 @@ end
 
 
 function SR.exportRadioFA18C(_data)
-    
+
      -- VHF AM
     -- Set radio data
     _data.radios[2].name = "AN/ARC-210 - 1"
@@ -1224,7 +1224,7 @@ function SR.exportRadioFA18C(_data)
     _data.radios[3].volume = SR.getRadioVolume(0, 123,{0.0,1.0},false) *  SR.getRadioVolume(0, 361,{0.0,1.0},false)
     _data.radios[3].encMode = 2 -- Mode 2 is set by aircraft
 
- 
+
     -- KY-58 Radio Encryption
     local _ky58Power = SR.round(SR.getButtonPosition(447),0.1)
     if _ky58Power == 0.1 and SR.round(SR.getButtonPosition(444),0.1) == 0.1 then -- mode switch set to C and powered on
@@ -1238,12 +1238,12 @@ function SR.exportRadioFA18C(_data)
 
         -- _data.radios[2].encKey = _channel
         -- _data.radios[2].enc = true
-       
+
         _data.radios[3].encKey = _channel
         _data.radios[3].enc = true
-    
+
     end
-    
+
     _data.control = 0; -- SRS Hotas Controls
 
     return _data
@@ -1265,38 +1265,17 @@ function SR.exportRadioF16C(_data)
    _data.radios[3].modulation = SR.getRadioModulation(38)
    _data.radios[3].volume = SR.getRadioVolume(0, 431,{0.0,1.0},false)
    _data.radios[3].encMode = 2
-   
+
    -- C&I Backup/UFC by Raffson, aka Stoner
    local _cni = SR.getButtonPosition(542)
    if _cni == 0 then
-	  local _buhf_func = SR.getSelectorPosition(417, 0.1)
-      local _buhf_mode = SR.getSelectorPosition(416,0.1)
-	  if _buhf_func ~= 0 and _buhf_func ~= 3 then
-	      if _buhf_mode == 1 then -- Using UHF preset channels
-			local _channel  = SR.getSelectorPosition(410,0.05) + 1 --add 1 as channel 0 is channel 1
-			_data.radios[2].channel = _channel 
-		  elseif _buhf_mode == 2 then -- GUARD
-			_data.radios[2].freq = 243.0*1000000
-		  else -- Manual frequency
-		    local _d1 = 100*math.min((SR.getSelectorPosition(411, 0.1)+1), 3)
-		    local _d2 = 10*SR.getSelectorPosition(412, 0.1)
-		    local _d3 = SR.getSelectorPosition(413, 0.1)
-		    local _d4 = 0.1*SR.getSelectorPosition(414, 0.1)
-		    local _d5 = 0.025*SR.getSelectorPosition(415, 0.25)
-		    _data.radios[2].freq = (_d1+_d2+_d3+_d4+_d5)*1000000
-		  end
-		  if _buhf_func == 2 then -- Function set to BOTH --> also listen to guard
-			_data.radios[2].secFreq = 243.0*1000000
-		  else
-		    _data.radios[2].secFreq = 0
-		  end
-	  else -- UHF function is off or set to ADF --> disable transmissions by setting frequency to 0
-		  _data.radios[2].freq = 0
-		  _data.radios[2].secFreq = 0
-	  end
-	  --modulation should be the same as the main radio, thus we're leaving it alone...
-	  --same for encryption...
-	  _data.radios[2].volume = SR.getRadioVolume(0, 420,{0.0,1.0},false)
+    local _buhf_func = SR.getSelectorPosition(417, 0.1)
+    if _buhf_func == 2 then -- Function set to BOTH --> also listen to guard
+      _data.radios[2].secFreq = 243.0*1000000
+    else
+      _data.radios[2].secFreq = 0
+    end
+    _data.radios[2].volume = SR.getRadioVolume(0, 420,{0.0,1.0},false)
    end
 
    -- KY-58 Radio Encryption
@@ -1326,7 +1305,7 @@ function SR.exportRadioF16C(_data)
    end
    if _cipherOnly and _data.radios[2].enc ~=true then
       _data.radios[2].freq = 0
-   end  
+   end
 
    _data.control = 0; -- SRS Hotas Controls
 
@@ -1345,7 +1324,7 @@ function SR.exportRadioF86Sabre(_data)
     local _channel  = SR.getSelectorPosition(807,0.01)
 
     if _channel >= 1 then
-        _data.radios[2].channel = _channel 
+        _data.radios[2].channel = _channel
     end
 
     _data.selected = 1
@@ -1353,7 +1332,7 @@ function SR.exportRadioF86Sabre(_data)
     --guard mode for UHF Radio
     local uhfModeKnob = SR.getSelectorPosition(805,0.1)
     if uhfModeKnob == 2 and _data.radios[2].freq > 1000 then
-        _data.radios[2].secFreq = 243.0*1000000 
+        _data.radios[2].secFreq = 243.0*1000000
     end
 
         -- Check PTT
@@ -1492,7 +1471,7 @@ function SR.exportRadioMIG21(_data)
     _data.radios[2].modulation = 0
     _data.radios[2].volume = SR.getRadioVolume(0, 210,{0.0,1.0},false)
 
-    _data.radios[2].channel =  SR.getSelectorPosition(211,0.05)   
+    _data.radios[2].channel =  SR.getSelectorPosition(211,0.05)
 
     _data.selected = 1
 
@@ -1534,7 +1513,7 @@ function SR.exportRadioMIG21(_data)
 end
 
 
-function SR.exportRadioF5E(_data) 
+function SR.exportRadioF5E(_data)
     _data.radios[2].name = "AN/ARC-164"
     _data.radios[2].freq = SR.getRadioFrequency(23)
     _data.radios[2].modulation = 0
@@ -1544,16 +1523,16 @@ function SR.exportRadioF5E(_data)
     local _selector  = SR.getSelectorPosition(307,0.1)
 
     if _selector == 1 then
-        _data.radios[2].channel =  SR.getSelectorPosition(300,0.05) + 1 --add 1 as channel 0 is channel 1 
+        _data.radios[2].channel =  SR.getSelectorPosition(300,0.05) + 1 --add 1 as channel 0 is channel 1
     end
 
     _data.selected = 1
 
     --guard mode for UHF Radio
     local uhfModeKnob = SR.getSelectorPosition(311,0.1)
-    
+
     if uhfModeKnob == 2 and _data.radios[2].freq > 1000 then
-        _data.radios[2].secFreq = 243.0*1000000 
+        _data.radios[2].secFreq = 243.0*1000000
     end
 
     -- Check PTT - By Tarres!
@@ -1732,7 +1711,7 @@ function SR.exportRadioSpitfireLFMkIX (_data)
     _data.radios[2].volume = 1.0 --no volume control
 
     _data.selected = 1
-    
+
       -- Expansion Radio - Server Side Controlled
     _data.radios[3].name = "AN/ARC-186(V)"
     _data.radios[3].freq = 124.8*1000000 --116,00-151,975 MHz
@@ -1904,7 +1883,7 @@ function SR.exportRadioHawk(_data)
       --guard mode for UHF Radio
     local _uhfKnob = SR.getSelectorPosition(221,0.25)
     if _uhfKnob == 2 and _data.radios[2].freq > 1000 then
-        _data.radios[2].secFreq = 243.0*1000000 
+        _data.radios[2].secFreq = 243.0*1000000
     end
 
          --- is VHF ON?
@@ -1914,7 +1893,7 @@ function SR.exportRadioHawk(_data)
     --guard mode for VHF Radio
     local _vhfKnob = SR.getSelectorPosition(391,0.2)
     if _vhfKnob == 2 and _data.radios[3].freq > 1000 then
-        _data.radios[3].secFreq = 121.5*1000000 
+        _data.radios[3].secFreq = 121.5*1000000
     end
 
     -- Radio Select Switch
@@ -1942,7 +1921,7 @@ function SR.exportRadioM2000C(_data)
     local _selector  = SR.getSelectorPosition(448,0.50)
 
     if _selector == 1 then
-        _data.radios[2].channel =  SR.getSelectorPosition(445,0.05)  --add 1 as channel 0 is channel 1 
+        _data.radios[2].channel =  SR.getSelectorPosition(445,0.05)  --add 1 as channel 0 is channel 1
     end
 
     _data.radios[3].name = "TRT ERA 7200 UHF"
@@ -1964,7 +1943,7 @@ function SR.exportRadioM2000C(_data)
     --guard mode for V/UHF Radio
     local uhfModeKnob = SR.getSelectorPosition(446,0.25) -- TODO!
     if uhfModeKnob == 2 and _data.radios[2].freq > 1000 then
-        _data.radios[2].secFreq = 243.0*1000000 
+        _data.radios[2].secFreq = 243.0*1000000
     end
 
     -- reset state on aircraft switch
@@ -2005,7 +1984,7 @@ function SR.exportRadioAV8BNA(_data)
 --  local _selector  = SR.getSelectorPosition(448,0.50)
 
     --if _selector == 1 then
-        --_data.radios[2].channel =  SR.getSelectorPosition(178,0.01)  --add 1 as channel 0 is channel 1 
+        --_data.radios[2].channel =  SR.getSelectorPosition(178,0.01)  --add 1 as channel 0 is channel 1
     --end
 
     _data.radios[3].name = "ARC-210 COM 2"
@@ -2062,7 +2041,7 @@ function SR.exportRadioF14(_data)
     _data.radios[2].volume = ARC159_device:get_volume()
     if ARC159_device:is_guard_enabled() then
         _data.radios[2].secFreq = 243.0*1000000
-    else 
+    else
         _data.radios[2].secFreq = 0
     end
     _data.radios[2].freqMin = 225*1000000
@@ -2074,10 +2053,10 @@ function SR.exportRadioF14(_data)
     _data.radios[3].name = "AN/ARC-182(V)"
     _data.radios[3].freq = ARC182_device:is_on() and SR.round(ARC182_device:get_frequency(),5000) or 1
     _data.radios[3].modulation = ARC182_device:get_modulation()
-    _data.radios[3].volume = ARC182_device:get_volume() 
+    _data.radios[3].volume = ARC182_device:get_volume()
     if ARC182_device:is_guard_enabled() then
         _data.radios[3].secFreq = SR.round(ARC182_device:get_guard_freq(),5000)
-    else 
+    else
         _data.radios[3].secFreq = 0
     end
     _data.radios[3].freqMin = 30*1000000
@@ -2205,7 +2184,7 @@ end
 function SR.getRadioFrequency(_deviceId, _roundTo)
     local _device = GetDevice(_deviceId)
 
-	
+
 
     if not _roundTo then
         _roundTo = 5000
@@ -2228,7 +2207,7 @@ function SR.getRadioModulation(_deviceId)
 
      if _device then
 
-        pcall(function() 
+        pcall(function()
             _modulation =  _device:get_modulation()
         end)
 
